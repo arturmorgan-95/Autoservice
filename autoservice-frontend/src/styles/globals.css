@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply bg-bg-primary text-white font-sans;
+    min-height: 100vh;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #0f0f2e;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(139, 92, 246, 0.4);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(139, 92, 246, 0.7);
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-md border border-violet-neon/20 rounded-xl shadow-glass;
+  }
+
+  .glass-card-hover {
+    @apply glass-card transition-all duration-300 hover:border-violet-neon/40 hover:shadow-neon-sm;
+  }
+
+  .neon-text {
+    @apply text-violet-neon;
+    text-shadow: 0 0 10px rgba(139, 92, 246, 0.8), 0 0 20px rgba(139, 92, 246, 0.4);
+  }
+
+  .neon-text-blue {
+    @apply text-blue-accent;
+    text-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
+  }
+
+  .btn-primary {
+    @apply bg-violet-neon hover:bg-violet-dark text-white font-medium px-4 py-2 rounded-lg
+           shadow-neon-sm hover:shadow-neon-violet transition-all duration-200
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply bg-white/5 hover:bg-white/10 text-white border border-violet-neon/30
+           hover:border-violet-neon/60 font-medium px-4 py-2 rounded-lg transition-all duration-200;
+  }
+
+  .btn-danger {
+    @apply bg-rose-accent/20 hover:bg-rose-accent/30 text-rose-accent border border-rose-accent/30
+           font-medium px-4 py-2 rounded-lg transition-all duration-200;
+  }
+
+  .btn-success {
+    @apply bg-emerald-accent/20 hover:bg-emerald-accent/30 text-emerald-accent border border-emerald-accent/30
+           font-medium px-4 py-2 rounded-lg transition-all duration-200;
+  }
+
+  .input-glass {
+    @apply w-full bg-white/5 border border-violet-neon/30 rounded-lg px-3 py-2.5 text-white
+           placeholder-white/30 focus:border-violet-neon focus:outline-none focus:ring-1
+           focus:ring-violet-neon/50 transition-all duration-200;
+  }
+
+  .select-glass {
+    @apply input-glass cursor-pointer;
+  }
+
+  .table-glass {
+    @apply w-full;
+  }
+
+  .table-glass thead tr {
+    @apply border-b border-violet-neon/20;
+  }
+
+  .table-glass th {
+    @apply text-left py-3 px-4 text-sm font-medium text-violet-light uppercase tracking-wider;
+  }
+
+  .table-glass tbody tr {
+    @apply border-b border-white/5 hover:bg-white/5 transition-colors;
+  }
+
+  .table-glass td {
+    @apply py-3 px-4 text-sm text-white/80;
+  }
+
+  .sidebar-link {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/60
+           hover:text-white hover:bg-violet-neon/10 transition-all duration-200 text-sm font-medium;
+  }
+
+  .sidebar-link.active {
+    @apply text-violet-light bg-violet-neon/20 border-r-2 border-violet-neon;
+  }
+
+  .stat-card {
+    @apply glass-card p-5 flex items-center gap-4;
+  }
+
+  .stat-icon {
+    @apply w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0;
+  }
+}

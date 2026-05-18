@@ -1,15 +1,32 @@
-import { useState, type FormEvent } from 'react'
+import { useState, useEffect, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { Car, Lock, User, Eye, EyeOff, UserCircle, Briefcase } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { MountainBackground } from '../../components/layout/MountainBackground'
 import { ROUTES } from '../../router/routes'
+import { ROLE_ROUTES } from '../../utils/roleConstants'
 import toast from 'react-hot-toast'
 
 type Tab = 'client' | 'employee'
 
 export function LoginPage() {
   const { login } = useAuth()
+
+  // Сбрасываем старый кэш с некорректными ролями
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('user')
+      if (stored) {
+        const u = JSON.parse(stored)
+        const roleName = u?.role?.roleName ?? ''
+        if (!ROLE_ROUTES[roleName]) {
+          localStorage.removeItem('user')
+        }
+      }
+    } catch {
+      localStorage.removeItem('user')
+    }
+  }, [])
   const [tab, setTab] = useState<Tab>('client')
   const [loginVal, setLoginVal] = useState('')
   const [password, setPassword] = useState('')

@@ -155,7 +155,9 @@ export function UsersPage() {
                   <td>
                     <div className="flex gap-2">
                       <button onClick={() => openEdit(u)} className="text-white/30 hover:text-violet-light transition-colors"><Pencil size={14} /></button>
-                      <button onClick={() => deleteMutation.mutate(u.id)} className="text-white/30 hover:text-rose-400 transition-colors"><Trash2 size={14} /></button>
+                      {u.role?.roleName !== 'Администратор' && (
+                        <button onClick={() => deleteMutation.mutate(u.id)} className="text-white/30 hover:text-rose-400 transition-colors"><Trash2 size={14} /></button>
+                      )}
                     </div>
                   </td>
                 </tr>

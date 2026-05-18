@@ -81,6 +81,16 @@
     @apply input-glass cursor-pointer;
   }
 
+  .select-glass option,
+  select option {
+    background-color: #13132b;
+    color: #ffffff;
+  }
+
+  select {
+    color-scheme: dark;
+  }
+
   .table-glass {
     @apply w-full;
   }

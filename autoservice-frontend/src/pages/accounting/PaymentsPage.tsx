@@ -58,6 +58,10 @@ export function PaymentsPage() {
   const filtered = filterStatus ? allPayments.filter(p => p.paymentStatus === filterStatus) : allPayments
   const sorted = [...filtered].sort((a, b) => new Date(b.paymentDate).getTime() - new Date(a.paymentDate).getTime())
 
+  // Заявки без платежей — для формы добавления
+  const paidAppIds = new Set(allPayments.map(p => p.applicationId))
+  const unpaidApplications = (applications ?? []).filter(a => !paidAppIds.has(a.id))
+
   // Стоимость заявок: сумма услуг и сумма оплат
   const appRows = (applications ?? []).map(app => {
     const services = (appServices ?? []).filter(s => s.applicationId === app.id)
@@ -204,7 +208,7 @@ export function PaymentsPage() {
 
       <Modal isOpen={showAdd} onClose={() => setShowAdd(false)} title="Новый платёж">
         <PaymentForm
-          applications={applications ?? []}
+          applications={unpaidApplications}
           onSubmit={(d) => createMutation.mutate(d)}
           loading={createMutation.isPending}
           onCancel={() => setShowAdd(false)}

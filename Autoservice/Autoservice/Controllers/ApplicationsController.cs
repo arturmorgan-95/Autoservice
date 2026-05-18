@@ -62,6 +62,16 @@ public class ApplicationsController : ControllerBase
         if (application == null)
             return NotFound();
 
+        // Завершена (id=6) требует оплаченного платежа
+        if (statusId == 6)
+        {
+            var hasPaid = await _context.Payments
+                .AnyAsync(p => p.ApplicationId == id && p.PaymentStatus == "Оплачено");
+
+            if (!hasPaid)
+                return BadRequest(new { message = "Нельзя завершить заявку без оплаты. Сначала добавьте платёж со статусом «Оплачено»." });
+        }
+
         application.StatusId = statusId;
 
         await _context.SaveChangesAsync();

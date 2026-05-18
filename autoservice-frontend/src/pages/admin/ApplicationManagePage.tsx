@@ -26,8 +26,10 @@ export function ApplicationManagePage() {
   const { data: app, isLoading } = useQuery({
     queryKey: ['application', appId],
     queryFn: () => applicationsApi.getById(appId).then(r => r.data),
+    staleTime: 0,
+    refetchOnWindowFocus: true,
   })
-  const { data: allServices }    = useQuery({ queryKey: ['applicationservices'], queryFn: () => applicationServicesApi.getAll().then(r => r.data) })
+  const { data: allServices }    = useQuery({ queryKey: ['applicationservices'], queryFn: () => applicationServicesApi.getAll().then(r => r.data), staleTime: 0, refetchOnWindowFocus: true })
   const { data: allPayments }    = useQuery({ queryKey: ['payments'],            queryFn: () => paymentsApi.getAll().then(r => r.data) })
   const { data: services }       = useQuery({ queryKey: ['services'],            queryFn: () => servicesApi.getAll().then(r => r.data) })
   const { data: statuses }       = useQuery({ queryKey: ['statuses'],            queryFn: () => statusesApi.getAll().then(r => r.data) })
@@ -36,7 +38,10 @@ export function ApplicationManagePage() {
   const changeStatusMutation = useMutation({
     mutationFn: (statusId: number) => applicationsApi.changeStatus(appId, statusId),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['applications'] }); qc.invalidateQueries({ queryKey: ['application', appId] }); toast.success('Статус обновлён') },
-    onError: () => toast.error('Ошибка обновления статуса'),
+    onError: (err: any) => {
+      const msg = err?.response?.data?.message ?? 'Ошибка обновления статуса'
+      toast.error(msg)
+    },
   })
 
   const addServiceMutation = useMutation({

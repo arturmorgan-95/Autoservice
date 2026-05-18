@@ -63,15 +63,19 @@ export function MasterTasksPage() {
                 </div>
                 <div>
                   <label className="block text-xs text-white/40 mb-1">Изменить статус</label>
-                  <select
-                    className="select-glass text-sm w-40"
-                    value={s.statusId}
-                    onChange={e => changeStatusMutation.mutate({ id: s.id, statusId: Number(e.target.value) })}
-                  >
-                    {(statuses ?? [])
-                      .filter(st => ['В очереди', 'Назначена', 'В работе', 'Выполнена'].includes(st.statusName))
-                      .map(st => <option key={st.id} value={st.id}>{st.statusName}</option>)}
-                  </select>
+                  {s.status?.statusName === 'Завершена' ? (
+                    <span className="text-xs text-white/30 italic">Изменение недоступно</span>
+                  ) : (
+                    <select
+                      className="select-glass text-sm w-40"
+                      value={s.statusId}
+                      onChange={e => changeStatusMutation.mutate({ id: s.id, statusId: Number(e.target.value) })}
+                    >
+                      {(statuses ?? [])
+                        .filter(st => ['В очереди', 'Назначена', 'В работе', 'Выполнена'].includes(st.statusName))
+                        .map(st => <option key={st.id} value={st.id}>{st.statusName}</option>)}
+                    </select>
+                  )}
                 </div>
               </div>
             </div>

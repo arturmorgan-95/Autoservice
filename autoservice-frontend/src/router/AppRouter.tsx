@@ -89,6 +89,7 @@ export function AppRouter() {
       <Route element={<ProtectedRoute allowedRoles={[ROLE_NAMES.ACCOUNTING]} />}>
         <Route element={<Layout />}>
           <Route path="/accounting/dashboard" element={<AccountingDashboard />} />
+          <Route path="/accounting/reports"   element={<PaymentReportPage />} />
         </Route>
       </Route>
 

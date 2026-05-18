@@ -35,6 +35,7 @@ const NAV_BY_ROLE: Record<string, NavItem[]> = {
   ],
   [ROLE_NAMES.ACCOUNTING]: [
     { label: 'Главная',    to: ROUTES.ACCOUNTING_DASHBOARD, icon: LayoutDashboard },
+    { label: 'Отчёты',    to: ROUTES.ACCOUNTING_REPORTS,   icon: BarChart2 },
   ],
   [ROLE_NAMES.DIRECTOR]: [
     { label: 'Главная',      to: ROUTES.DIRECTOR_DASHBOARD, icon: LayoutDashboard },

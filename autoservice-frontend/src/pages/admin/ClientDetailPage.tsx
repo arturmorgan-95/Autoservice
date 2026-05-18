@@ -1,21 +1,29 @@
 import { useParams, useNavigate } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
-import { ArrowLeft, Car, FileText } from 'lucide-react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { ArrowLeft, Car, FileText, Trash2 } from 'lucide-react'
 import { usersApi } from '../../api/users'
 import { applicationsApi } from '../../api/applications'
 import { carsApi } from '../../api/cars'
 import { StatusBadge } from '../../components/shared/StatusBadge'
 import { PageSpinner } from '../../components/ui/Spinner'
 import { formatDate } from '../../utils/formatters'
+import toast from 'react-hot-toast'
 
 export function ClientDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const qc = useQueryClient()
   const clientId = Number(id)
 
   const { data: user, isLoading } = useQuery({ queryKey: ['user', clientId], queryFn: () => usersApi.getById(clientId).then(r => r.data) })
   const { data: applications } = useQuery({ queryKey: ['applications'], queryFn: () => applicationsApi.getAll().then(r => r.data) })
   const { data: cars } = useQuery({ queryKey: ['cars'], queryFn: () => carsApi.getAll().then(r => r.data) })
+
+  const deleteCarMutation = useMutation({
+    mutationFn: (carId: number) => carsApi.delete(carId),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['cars'] }); toast.success('Автомобиль удалён') },
+    onError: (err: any) => toast.error(err?.response?.data?.message ?? 'Ошибка удаления'),
+  })
 
   if (isLoading) return <PageSpinner />
   if (!user) return <p className="text-white/40">Клиент не найден</p>
@@ -38,9 +46,18 @@ export function ClientDetailPage() {
         {clientCars.length === 0 ? <p className="text-white/40 text-sm">Нет автомобилей</p> : (
           <div className="grid grid-cols-2 gap-3">
             {clientCars.map(c => (
-              <div key={c.id} className="bg-white/5 rounded-lg p-3">
-                <p className="font-medium">{c.brand} {c.model} ({c.year})</p>
-                <p className="text-xs text-violet-light font-mono mt-1">{c.licensePlate}</p>
+              <div key={c.id} className="bg-white/5 rounded-lg p-3 flex items-start justify-between">
+                <div>
+                  <p className="font-medium">{c.brand} {c.model} ({c.year})</p>
+                  <p className="text-xs text-violet-light font-mono mt-1">{c.licensePlate}</p>
+                </div>
+                <button
+                  onClick={() => deleteCarMutation.mutate(c.id)}
+                  className="text-white/20 hover:text-rose-400 transition-colors ml-2 mt-0.5"
+                  title="Удалить автомобиль"
+                >
+                  <Trash2 size={14} />
+                </button>
               </div>
             ))}
           </div>

@@ -68,6 +68,13 @@ public class CarsController : ControllerBase
         if (car == null)
             return NotFound();
 
+        var completedStatusIds = new[] { 6 }; // Завершена
+        var hasActiveApplications = await _context.Applications
+            .AnyAsync(a => a.CarId == id && !completedStatusIds.Contains(a.StatusId));
+
+        if (hasActiveApplications)
+            return BadRequest(new { message = "Нельзя удалить автомобиль с незавершёнными заявками" });
+
         _context.Cars.Remove(car);
 
         await _context.SaveChangesAsync();

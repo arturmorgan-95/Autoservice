@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Car, Plus, Trash2 } from 'lucide-react'
+import { Car, Plus } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { carsApi } from '../../api/cars'
 import { Modal } from '../../components/ui/Modal'
@@ -18,12 +18,6 @@ export function MyCarsPage() {
   const { data: cars, isLoading } = useQuery({
     queryKey: ['cars'],
     queryFn: () => carsApi.getAll().then(r => r.data),
-  })
-
-  const deleteMutation = useMutation({
-    mutationFn: (id: number) => carsApi.delete(id),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['cars'] }); toast.success('Автомобиль удалён') },
-    onError: () => toast.error('Ошибка удаления'),
   })
 
   const createMutation = useMutation({
@@ -59,16 +53,10 @@ export function MyCarsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {myCars.map(car => (
             <div key={car.id} className="glass-card-hover p-5">
-              <div className="flex items-start justify-between mb-3">
+              <div className="mb-3">
                 <div className="w-10 h-10 rounded-xl bg-violet-neon/10 flex items-center justify-center">
                   <Car size={20} className="text-violet-neon" />
                 </div>
-                <button
-                  onClick={() => deleteMutation.mutate(car.id)}
-                  className="text-white/20 hover:text-rose-400 transition-colors"
-                >
-                  <Trash2 size={15} />
-                </button>
               </div>
               <h3 className="font-semibold text-white">{car.brand} {car.model}</h3>
               <p className="text-sm text-white/40 mt-0.5">{car.year} год</p>

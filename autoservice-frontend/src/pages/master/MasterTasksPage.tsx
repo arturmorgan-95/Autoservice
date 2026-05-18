@@ -26,7 +26,12 @@ export function MasterTasksPage() {
   const changeStatusMutation = useMutation({
     mutationFn: ({ id, statusId }: { id: number; statusId: number }) =>
       applicationServicesApi.changeStatus(id, statusId),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['applicationservices'] }); toast.success('Статус обновлён') },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['applicationservices'] })
+      qc.invalidateQueries({ queryKey: ['applications'] })
+      qc.invalidateQueries({ queryKey: ['application'] })
+      toast.success('Статус обновлён')
+    },
     onError: () => toast.error('Ошибка'),
   })
 
@@ -63,7 +68,9 @@ export function MasterTasksPage() {
                     value={s.statusId}
                     onChange={e => changeStatusMutation.mutate({ id: s.id, statusId: Number(e.target.value) })}
                   >
-                    {(statuses ?? []).map(st => <option key={st.id} value={st.id}>{st.statusName}</option>)}
+                    {(statuses ?? [])
+                      .filter(st => ['В очереди', 'Назначена', 'В работе', 'Выполнена'].includes(st.statusName))
+                      .map(st => <option key={st.id} value={st.id}>{st.statusName}</option>)}
                   </select>
                 </div>
               </div>

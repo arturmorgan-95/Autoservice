@@ -21,6 +21,11 @@ public class PaymentsController : ControllerBase
     {
         var payments = await _context.Payments
             .Include(p => p.Application)
+                .ThenInclude(a => a.Client)
+            .Include(p => p.Application)
+                .ThenInclude(a => a.Car)
+            .Include(p => p.Application)
+                .ThenInclude(a => a.Status)
             .ToListAsync();
 
         return Ok(payments);
@@ -31,6 +36,11 @@ public class PaymentsController : ControllerBase
     {
         var payment = await _context.Payments
             .Include(p => p.Application)
+                .ThenInclude(a => a.Client)
+            .Include(p => p.Application)
+                .ThenInclude(a => a.Car)
+            .Include(p => p.Application)
+                .ThenInclude(a => a.Status)
             .FirstOrDefaultAsync(p => p.Id == id);
 
         if (payment == null)
@@ -45,6 +55,21 @@ public class PaymentsController : ControllerBase
         payment.PaymentDate = DateTime.UtcNow;
 
         _context.Payments.Add(payment);
+
+        await _context.SaveChangesAsync();
+
+        return Ok(payment);
+    }
+
+    [HttpPut("{id}/status")]
+    public async Task<IActionResult> ChangeStatus(int id, [FromQuery] string status)
+    {
+        var payment = await _context.Payments.FindAsync(id);
+
+        if (payment == null)
+            return NotFound();
+
+        payment.PaymentStatus = status;
 
         await _context.SaveChangesAsync();
 

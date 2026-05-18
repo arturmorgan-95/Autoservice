@@ -11,17 +11,38 @@ import { formatDate, formatMoney } from '../../utils/formatters'
 import toast from 'react-hot-toast'
 import type { CreatePaymentRequest } from '../../types'
 
+const PAYMENT_STATUSES = ['Ожидает', 'Оплачено', 'Отменено']
+
+function statusStyle(s: string) {
+  if (s === 'Оплачено') return 'bg-emerald-accent/20 text-emerald-400'
+  if (s === 'Отменено') return 'bg-rose-accent/20 text-rose-400'
+  return 'bg-amber-accent/20 text-amber-400'
+}
+
 export function PaymentsPage() {
   const qc = useQueryClient()
   const [showAdd, setShowAdd] = useState(false)
   const [filterStatus, setFilterStatus] = useState('')
 
-  const { data: payments, isLoading } = useQuery({ queryKey: ['payments'], queryFn: () => paymentsApi.getAll().then(r => r.data) })
-  const { data: applications } = useQuery({ queryKey: ['applications'], queryFn: () => applicationsApi.getAll().then(r => r.data) })
+  const { data: payments, isLoading } = useQuery({
+    queryKey: ['payments'],
+    queryFn: () => paymentsApi.getAll().then(r => r.data),
+    staleTime: 0,
+  })
+  const { data: applications } = useQuery({
+    queryKey: ['applications'],
+    queryFn: () => applicationsApi.getAll().then(r => r.data),
+  })
 
   const createMutation = useMutation({
     mutationFn: (data: CreatePaymentRequest) => paymentsApi.create(data),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['payments'] }); setShowAdd(false); toast.success('Платёж добавлен') },
+    onError: () => toast.error('Ошибка'),
+  })
+
+  const changeStatusMutation = useMutation({
+    mutationFn: ({ id, status }: { id: number; status: string }) => paymentsApi.changeStatus(id, status),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['payments'] }); toast.success('Статус обновлён') },
     onError: () => toast.error('Ошибка'),
   })
 
@@ -38,11 +59,13 @@ export function PaymentsPage() {
           <h1 className="text-2xl font-bold text-white">Платежи</h1>
           <p className="text-white/40 text-sm mt-1">Всего: {all.length}</p>
         </div>
-        <button onClick={() => setShowAdd(true)} className="btn-primary flex items-center gap-2"><Plus size={16} /> Добавить платёж</button>
+        <button onClick={() => setShowAdd(true)} className="btn-primary flex items-center gap-2">
+          <Plus size={16} /> Добавить платёж
+        </button>
       </div>
 
-      <div className="flex gap-2">
-        {['', 'Оплачено', 'Ожидает', 'Отменено'].map(s => (
+      <div className="flex gap-2 flex-wrap">
+        {['', ...PAYMENT_STATUSES].map(s => (
           <button key={s} onClick={() => setFilterStatus(s)}
             className={`text-xs px-3 py-1.5 rounded-full border transition-all ${filterStatus === s ? 'bg-violet-neon/20 border-violet-neon text-violet-light' : 'border-white/10 text-white/40 hover:border-white/30'}`}>
             {s || 'Все'}
@@ -55,18 +78,41 @@ export function PaymentsPage() {
       ) : (
         <div className="glass-card overflow-hidden">
           <table className="table-glass">
-            <thead><tr><th>Дата</th><th>Заявка</th><th>Клиент</th><th>Сумма</th><th>Метод</th><th>Статус</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Дата</th>
+                <th>Заявка</th>
+                <th>Клиент</th>
+                <th>Автомобиль</th>
+                <th>Сумма</th>
+                <th>Метод</th>
+                <th>Статус</th>
+              </tr>
+            </thead>
             <tbody>
               {sorted.map(p => {
-                const app = (applications ?? []).find(a => a.id === p.applicationId)
+                const app = p.application ?? (applications ?? []).find(a => a.id === p.applicationId)
                 return (
                   <tr key={p.id}>
-                    <td className="text-white/40">{formatDate(p.paymentDate)}</td>
-                    <td className="text-violet-light">#{p.applicationId}</td>
+                    <td className="text-white/40 whitespace-nowrap">{formatDate(p.paymentDate)}</td>
+                    <td className="text-violet-light font-medium">#{p.applicationId}</td>
                     <td>{app?.client?.fullName ?? '—'}</td>
-                    <td className="font-medium">{formatMoney(p.amount)}</td>
-                    <td>{p.paymentMethod}</td>
-                    <td><span className={`text-xs px-2 py-0.5 rounded-full ${p.paymentStatus === 'Оплачено' ? 'bg-emerald-accent/20 text-emerald-400' : p.paymentStatus === 'Отменено' ? 'bg-rose-accent/20 text-rose-400' : 'bg-amber-accent/20 text-amber-400'}`}>{p.paymentStatus}</span></td>
+                    <td className="text-white/60">
+                      {app?.car ? `${app.car.brand} ${app.car.model}` : '—'}
+                    </td>
+                    <td className="font-medium text-emerald-400">{formatMoney(p.amount)}</td>
+                    <td className="text-white/60">{p.paymentMethod || '—'}</td>
+                    <td>
+                      <select
+                        className="select-glass text-xs py-1 px-2 w-32"
+                        value={p.paymentStatus}
+                        onChange={e => changeStatusMutation.mutate({ id: p.id, status: e.target.value })}
+                      >
+                        {PAYMENT_STATUSES.map(s => (
+                          <option key={s} value={s}>{s}</option>
+                        ))}
+                      </select>
+                    </td>
                   </tr>
                 )
               })}

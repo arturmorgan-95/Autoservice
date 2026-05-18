@@ -58,9 +58,7 @@ public class ApplicationServicesController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, ApplicationService applicationService)
     {
-        if (id != applicationService.Id)
-            return BadRequest();
-
+        applicationService.Id = id;
         _context.Entry(applicationService).State = EntityState.Modified;
 
         await _context.SaveChangesAsync();

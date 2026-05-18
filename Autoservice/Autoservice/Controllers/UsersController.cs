@@ -52,9 +52,7 @@ public class UsersController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, User user)
     {
-        if (id != user.Id)
-            return BadRequest();
-
+        user.Id = id;
         _context.Entry(user).State = EntityState.Modified;
 
         await _context.SaveChangesAsync();

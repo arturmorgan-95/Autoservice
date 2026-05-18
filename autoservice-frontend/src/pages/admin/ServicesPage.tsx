@@ -24,7 +24,7 @@ export function ServicesPage() {
   })
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: Partial<Service> }) => servicesApi.update(id, data),
+    mutationFn: ({ id, data }: { id: number; data: CreateServiceRequest }) => servicesApi.update(id, { ...data, id }),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['services'] }); setEditing(null); toast.success('Услуга обновлена') },
     onError: () => toast.error('Ошибка'),
   })

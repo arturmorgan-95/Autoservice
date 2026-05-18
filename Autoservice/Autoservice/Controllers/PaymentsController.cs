@@ -54,9 +54,7 @@ public class PaymentsController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, Payment payment)
     {
-        if (id != payment.Id)
-            return BadRequest();
-
+        payment.Id = id;
         _context.Entry(payment).State = EntityState.Modified;
 
         await _context.SaveChangesAsync();

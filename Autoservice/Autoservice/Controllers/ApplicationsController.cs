@@ -32,9 +32,14 @@ public class ApplicationsController : ControllerBase
     [HttpGet("{Id}")]
     public async Task<IActionResult> GetById(int Id)
     {
-        var application = await _context.Applications.FirstOrDefaultAsync(a => a.Id == Id);
+        var application = await _context.Applications
+            .Include(a => a.Client)
+            .Include(a => a.Car)
+            .Include(a => a.Admin)
+            .Include(a => a.Status)
+            .FirstOrDefaultAsync(a => a.Id == Id);
 
-        if (application == null) 
+        if (application == null)
         {
             return NotFound();
         }

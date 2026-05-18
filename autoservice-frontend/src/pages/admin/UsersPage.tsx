@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Users, Plus, Trash2, Search } from 'lucide-react'
+import { Users, Plus, Trash2, Search, Pencil } from 'lucide-react'
 import { usersApi } from '../../api/users'
 import { rolesApi } from '../../api/roles'
 import { PageSpinner } from '../../components/ui/Spinner'
@@ -8,21 +8,33 @@ import { EmptyState } from '../../components/ui/EmptyState'
 import { Modal } from '../../components/ui/Modal'
 import { Badge } from '../../components/ui/Badge'
 import toast from 'react-hot-toast'
-import type { CreateUserRequest } from '../../types'
+import type { User, CreateUserRequest } from '../../types'
+
+const emptyForm = (): CreateUserRequest => ({
+  roleId: 5, fullName: '', email: '', phoneNumber: '', login: '', passwordHash: '',
+})
 
 export function UsersPage() {
   const qc = useQueryClient()
   const [showAdd, setShowAdd] = useState(false)
+  const [editing, setEditing] = useState<User | null>(null)
   const [search, setSearch] = useState('')
-  const [form, setForm] = useState<CreateUserRequest>({ roleId: 1, fullName: '', email: '', phoneNumber: '', login: '', passwordHash: '' })
+  const [form, setForm] = useState<CreateUserRequest>(emptyForm())
 
   const { data: users, isLoading } = useQuery({ queryKey: ['users'], queryFn: () => usersApi.getAll().then(r => r.data) })
   const { data: roles } = useQuery({ queryKey: ['roles'], queryFn: () => rolesApi.getAll().then(r => r.data) })
 
   const createMutation = useMutation({
     mutationFn: (data: CreateUserRequest) => usersApi.create(data),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['users'] }); setShowAdd(false); toast.success('Пользователь создан') },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['users'] }); setShowAdd(false); setForm(emptyForm()); toast.success('Пользователь создан') },
     onError: () => toast.error('Ошибка создания'),
+  })
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: CreateUserRequest }) =>
+      usersApi.update(id, { ...data, id }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['users'] }); setEditing(null); toast.success('Данные обновлены') },
+    onError: () => toast.error('Ошибка обновления'),
   })
 
   const deleteMutation = useMutation({
@@ -40,6 +52,44 @@ export function UsersPage() {
   const handle = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setForm(p => ({ ...p, [e.target.name]: e.target.name === 'roleId' ? Number(e.target.value) : e.target.value }))
 
+  const openEdit = (u: User) => {
+    setEditing(u)
+    setForm({ roleId: u.roleId, fullName: u.fullName, email: u.email, phoneNumber: u.phoneNumber, login: u.login, passwordHash: '' })
+  }
+
+  const UserForm = ({ onSubmit, loading, onCancel, isEdit }: {
+    onSubmit: () => void; loading: boolean; onCancel: () => void; isEdit?: boolean
+  }) => (
+    <form onSubmit={e => { e.preventDefault(); onSubmit() }} className="space-y-4">
+      <div className="grid grid-cols-2 gap-3">
+        <div><label className="block text-sm text-white/60 mb-1">ФИО</label><input name="fullName" value={form.fullName} onChange={handle} required className="input-glass" /></div>
+        <div><label className="block text-sm text-white/60 mb-1">Email</label><input name="email" value={form.email} onChange={handle} type="email" className="input-glass" /></div>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <div><label className="block text-sm text-white/60 mb-1">Телефон</label><input name="phoneNumber" value={form.phoneNumber} onChange={handle} className="input-glass" /></div>
+        <div>
+          <label className="block text-sm text-white/60 mb-1">Роль</label>
+          <select name="roleId" value={form.roleId} onChange={handle} className="select-glass">
+            {(roles ?? []).map(r => <option key={r.id} value={r.id}>{r.roleName}</option>)}
+          </select>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <div><label className="block text-sm text-white/60 mb-1">Логин</label><input name="login" value={form.login} onChange={handle} required className="input-glass" /></div>
+        <div>
+          <label className="block text-sm text-white/60 mb-1">
+            Пароль {isEdit && <span className="text-white/30">(оставьте пустым чтобы не менять)</span>}
+          </label>
+          <input name="passwordHash" value={form.passwordHash} onChange={handle} required={!isEdit} type="password" className="input-glass" />
+        </div>
+      </div>
+      <div className="flex gap-3 pt-2">
+        <button type="button" onClick={onCancel} className="btn-secondary flex-1">Отмена</button>
+        <button type="submit" disabled={loading} className="btn-primary flex-1">{loading ? 'Сохранение...' : isEdit ? 'Сохранить' : 'Создать'}</button>
+      </div>
+    </form>
+  )
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
@@ -47,7 +97,9 @@ export function UsersPage() {
           <h1 className="text-2xl font-bold text-white">Сотрудники</h1>
           <p className="text-white/40 text-sm mt-1">Всего: {(users ?? []).length}</p>
         </div>
-        <button onClick={() => setShowAdd(true)} className="btn-primary flex items-center gap-2"><Plus size={16} /> Добавить</button>
+        <button onClick={() => { setForm(emptyForm()); setShowAdd(true) }} className="btn-primary flex items-center gap-2">
+          <Plus size={16} /> Добавить
+        </button>
       </div>
 
       <div className="relative max-w-sm">
@@ -60,16 +112,20 @@ export function UsersPage() {
       ) : (
         <div className="glass-card overflow-hidden">
           <table className="table-glass">
-            <thead><tr><th>Имя</th><th>Логин</th><th>Email</th><th>Роль</th><th></th></tr></thead>
+            <thead><tr><th>Имя</th><th>Логин</th><th>Email</th><th>Телефон</th><th>Роль</th><th></th></tr></thead>
             <tbody>
               {filtered.map(u => (
                 <tr key={u.id}>
                   <td className="font-medium">{u.fullName}</td>
                   <td className="text-white/50 font-mono text-xs">{u.login}</td>
                   <td className="text-white/50">{u.email}</td>
+                  <td className="text-white/50">{u.phoneNumber}</td>
                   <td><Badge label={u.role?.roleName ?? '—'} variant="violet" /></td>
                   <td>
-                    <button onClick={() => deleteMutation.mutate(u.id)} className="text-white/20 hover:text-rose-400 transition-colors"><Trash2 size={14} /></button>
+                    <div className="flex gap-2">
+                      <button onClick={() => openEdit(u)} className="text-white/30 hover:text-violet-light transition-colors"><Pencil size={14} /></button>
+                      <button onClick={() => deleteMutation.mutate(u.id)} className="text-white/30 hover:text-rose-400 transition-colors"><Trash2 size={14} /></button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -79,29 +135,22 @@ export function UsersPage() {
       )}
 
       <Modal isOpen={showAdd} onClose={() => setShowAdd(false)} title="Новый пользователь" size="md">
-        <form onSubmit={e => { e.preventDefault(); createMutation.mutate(form) }} className="space-y-4">
-          <div className="grid grid-cols-2 gap-3">
-            <div><label className="block text-sm text-white/60 mb-1">ФИО</label><input name="fullName" value={form.fullName} onChange={handle} required className="input-glass" /></div>
-            <div><label className="block text-sm text-white/60 mb-1">Email</label><input name="email" value={form.email} onChange={handle} type="email" required className="input-glass" /></div>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div><label className="block text-sm text-white/60 mb-1">Телефон</label><input name="phoneNumber" value={form.phoneNumber} onChange={handle} className="input-glass" /></div>
-            <div>
-              <label className="block text-sm text-white/60 mb-1">Роль</label>
-              <select name="roleId" value={form.roleId} onChange={handle} className="select-glass">
-                {(roles ?? []).map(r => <option key={r.id} value={r.id}>{r.roleName}</option>)}
-              </select>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div><label className="block text-sm text-white/60 mb-1">Логин</label><input name="login" value={form.login} onChange={handle} required className="input-glass" /></div>
-            <div><label className="block text-sm text-white/60 mb-1">Пароль</label><input name="passwordHash" value={form.passwordHash} onChange={handle} required type="password" className="input-glass" /></div>
-          </div>
-          <div className="flex gap-3 pt-2">
-            <button type="button" onClick={() => setShowAdd(false)} className="btn-secondary flex-1">Отмена</button>
-            <button type="submit" disabled={createMutation.isPending} className="btn-primary flex-1">{createMutation.isPending ? 'Создание...' : 'Создать'}</button>
-          </div>
-        </form>
+        <UserForm onSubmit={() => createMutation.mutate(form)} loading={createMutation.isPending} onCancel={() => setShowAdd(false)} />
+      </Modal>
+
+      <Modal isOpen={!!editing} onClose={() => setEditing(null)} title="Редактировать пользователя" size="md">
+        {editing && (
+          <UserForm
+            isEdit
+            onSubmit={() => {
+              const data = { ...form }
+              if (!data.passwordHash) data.passwordHash = editing.passwordHash
+              updateMutation.mutate({ id: editing.id, data })
+            }}
+            loading={updateMutation.isPending}
+            onCancel={() => setEditing(null)}
+          />
+        )}
       </Modal>
     </div>
   )

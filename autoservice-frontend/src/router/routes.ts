@@ -15,6 +15,8 @@ export const ROUTES = {
   ADMIN_CLIENT_DETAIL: '/admin/clients/:id',
   ADMIN_SERVICES: '/admin/services',
   ADMIN_USERS: '/admin/users',
+  ADMIN_PAYMENTS: '/admin/payments',
+  ADMIN_REPORTS: '/admin/reports',
 
   MASTER_DASHBOARD: '/master/dashboard',
   MASTER_TASKS: '/master/tasks',

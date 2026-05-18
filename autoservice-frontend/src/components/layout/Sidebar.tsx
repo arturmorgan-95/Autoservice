@@ -23,9 +23,11 @@ const NAV_BY_ROLE: Record<string, NavItem[]> = {
   [ROLE_NAMES.ADMIN]: [
     { label: 'Главная',      to: ROUTES.ADMIN_DASHBOARD,     icon: LayoutDashboard },
     { label: 'Все заявки',   to: ROUTES.ADMIN_APPLICATIONS,  icon: FileText },
-    { label: 'Клиенты',     to: ROUTES.ADMIN_CLIENTS,        icon: Users },
-    { label: 'Услуги',      to: ROUTES.ADMIN_SERVICES,       icon: Wrench },
-    { label: 'Сотрудники',  to: ROUTES.ADMIN_USERS,          icon: Settings },
+    { label: 'Клиенты',      to: ROUTES.ADMIN_CLIENTS,       icon: Users },
+    { label: 'Платежи',      to: ROUTES.ADMIN_PAYMENTS,      icon: CreditCard },
+    { label: 'Отчёты',       to: ROUTES.ADMIN_REPORTS,       icon: BarChart2 },
+    { label: 'Услуги',       to: ROUTES.ADMIN_SERVICES,      icon: Wrench },
+    { label: 'Сотрудники',   to: ROUTES.ADMIN_USERS,         icon: Settings },
   ],
   [ROLE_NAMES.MASTER]: [
     { label: 'Главная',     to: ROUTES.MASTER_DASHBOARD, icon: LayoutDashboard },
@@ -33,8 +35,6 @@ const NAV_BY_ROLE: Record<string, NavItem[]> = {
   ],
   [ROLE_NAMES.ACCOUNTING]: [
     { label: 'Главная',    to: ROUTES.ACCOUNTING_DASHBOARD, icon: LayoutDashboard },
-    { label: 'Платежи',   to: ROUTES.ACCOUNTING_PAYMENTS,  icon: CreditCard },
-    { label: 'Отчёты',    to: ROUTES.ACCOUNTING_REPORTS,   icon: BarChart2 },
   ],
   [ROLE_NAMES.DIRECTOR]: [
     { label: 'Главная',      to: ROUTES.DIRECTOR_DASHBOARD, icon: LayoutDashboard },

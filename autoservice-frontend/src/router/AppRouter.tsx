@@ -31,6 +31,7 @@ import { AccountingDashboard }  from '../pages/accounting/AccountingDashboard'
 import { PaymentsPage }         from '../pages/accounting/PaymentsPage'
 import { PaymentReportPage }    from '../pages/accounting/PaymentReportPage'
 
+
 import { DirectorDashboard }  from '../pages/director/DirectorDashboard'
 import { MastersLoadPage }    from '../pages/director/MastersLoadPage'
 import { StatsPage }          from '../pages/director/StatsPage'
@@ -71,6 +72,8 @@ export function AppRouter() {
           <Route path="/admin/clients/:id"        element={<ClientDetailPage />} />
           <Route path="/admin/services"           element={<ServicesPage />} />
           <Route path="/admin/users"              element={<UsersPage />} />
+          <Route path="/admin/payments"           element={<PaymentsPage />} />
+          <Route path="/admin/reports"            element={<PaymentReportPage />} />
         </Route>
       </Route>
 
@@ -86,8 +89,6 @@ export function AppRouter() {
       <Route element={<ProtectedRoute allowedRoles={[ROLE_NAMES.ACCOUNTING]} />}>
         <Route element={<Layout />}>
           <Route path="/accounting/dashboard" element={<AccountingDashboard />} />
-          <Route path="/accounting/payments"  element={<PaymentsPage />} />
-          <Route path="/accounting/reports"   element={<PaymentReportPage />} />
         </Route>
       </Route>
 

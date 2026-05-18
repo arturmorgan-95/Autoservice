@@ -6,6 +6,7 @@ import { ProtectedRoute } from './ProtectedRoute'
 import { Layout } from '../components/layout/Layout'
 
 import { LoginPage } from '../pages/auth/LoginPage'
+import { RegisterPage } from '../pages/auth/RegisterPage'
 import { NotFoundPage } from '../pages/shared/NotFoundPage'
 import { UnauthorizedPage } from '../pages/shared/UnauthorizedPage'
 
@@ -45,6 +46,7 @@ export function AppRouter() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
       <Route path="/unauthorized" element={<UnauthorizedPage />} />
       <Route path="/" element={<RootRedirect />} />
 

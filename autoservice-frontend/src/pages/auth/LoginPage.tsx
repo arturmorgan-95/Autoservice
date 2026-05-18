@@ -1,25 +1,36 @@
 import { useState, type FormEvent } from 'react'
-import { Car, Lock, User, Eye, EyeOff } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { Car, Lock, User, Eye, EyeOff, UserCircle, Briefcase } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { MountainBackground } from '../../components/layout/MountainBackground'
+import { ROUTES } from '../../router/routes'
 import toast from 'react-hot-toast'
+
+type Tab = 'client' | 'employee'
 
 export function LoginPage() {
   const { login } = useAuth()
-  const [login_, setLogin] = useState('')
+  const [tab, setTab] = useState<Tab>('client')
+  const [loginVal, setLoginVal] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
 
+  const handleTabChange = (next: Tab) => {
+    setTab(next)
+    setLoginVal('')
+    setPassword('')
+  }
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    if (!login_ || !password) {
+    if (!loginVal || !password) {
       toast.error('Введите логин и пароль')
       return
     }
     setLoading(true)
     try {
-      await login({ login: login_, passwordHash: password })
+      await login({ login: loginVal, passwordHash: password })
     } catch {
       toast.error('Неверный логин или пароль')
     } finally {
@@ -41,9 +52,39 @@ export function LoginPage() {
           <p className="text-white/40 text-sm">CRM система управления автосервисом</p>
         </div>
 
-        {/* Форма */}
         <div className="glass-card p-8">
-          <h2 className="text-xl font-semibold text-white mb-6">Вход в систему</h2>
+          {/* Вкладки */}
+          <div className="flex rounded-xl bg-white/5 p-1 mb-6 gap-1">
+            <button
+              type="button"
+              onClick={() => handleTabChange('client')}
+              className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition-all ${
+                tab === 'client'
+                  ? 'bg-gradient-violet text-white shadow-neon-sm'
+                  : 'text-white/40 hover:text-white/70'
+              }`}
+            >
+              <UserCircle size={16} />
+              Клиент
+            </button>
+            <button
+              type="button"
+              onClick={() => handleTabChange('employee')}
+              className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition-all ${
+                tab === 'employee'
+                  ? 'bg-gradient-violet text-white shadow-neon-sm'
+                  : 'text-white/40 hover:text-white/70'
+              }`}
+            >
+              <Briefcase size={16} />
+              Сотрудник
+            </button>
+          </div>
+
+          <h2 className="text-xl font-semibold text-white mb-1">Вход в систему</h2>
+          <p className="text-xs text-white/30 mb-6">
+            {tab === 'client' ? 'Войдите как клиент или зарегистрируйтесь' : 'Вход для сотрудников автосервиса'}
+          </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -52,8 +93,8 @@ export function LoginPage() {
                 <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
                 <input
                   type="text"
-                  value={login_}
-                  onChange={(e) => setLogin(e.target.value)}
+                  value={loginVal}
+                  onChange={(e) => setLoginVal(e.target.value)}
                   placeholder="Введите логин"
                   className="input-glass pl-9"
                   autoComplete="username"
@@ -88,19 +129,33 @@ export function LoginPage() {
               disabled={loading}
               className="btn-primary w-full py-2.5 mt-2 flex items-center justify-center gap-2"
             >
-              {loading ? (
+              {loading && (
                 <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              ) : null}
+              )}
               {loading ? 'Вход...' : 'Войти'}
             </button>
           </form>
 
-          <p className="text-center text-xs text-white/20 mt-6">
-            Автосервис «МастерАвто» — система управления заявками
-          </p>
+          {/* Ссылка на регистрацию — только для клиентов */}
+          {tab === 'client' && (
+            <div className="mt-5 text-center">
+              <span className="text-sm text-white/30">Нет аккаунта? </span>
+              <Link
+                to={ROUTES.REGISTER}
+                className="text-sm text-violet-light hover:text-violet-neon transition-colors font-medium"
+              >
+                Зарегистрироваться
+              </Link>
+            </div>
+          )}
+
+          {tab === 'employee' && (
+            <p className="mt-5 text-center text-xs text-white/20">
+              Аккаунт сотрудника создаётся администратором
+            </p>
+          )}
         </div>
 
-        {/* Декоративные горы внизу */}
         <div className="text-center mt-4 text-white/10 text-xs">
           Кавказские горы, 2026
         </div>

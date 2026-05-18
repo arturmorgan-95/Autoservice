@@ -26,6 +26,8 @@ export function AllApplicationsPage() {
   const { data: applications, isLoading } = useQuery({
     queryKey: ['applications'],
     queryFn: () => applicationsApi.getAll().then(r => r.data),
+    staleTime: 0,
+    refetchOnWindowFocus: true,
   })
   const { data: cars }     = useQuery({ queryKey: ['cars'],     queryFn: () => carsApi.getAll().then(r => r.data) })
   const { data: users }    = useQuery({ queryKey: ['users'],    queryFn: () => usersApi.getAll().then(r => r.data) })

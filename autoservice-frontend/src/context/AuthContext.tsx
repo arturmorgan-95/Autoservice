@@ -9,7 +9,7 @@ interface AuthContextValue {
   user: User | null
   isAuthenticated: boolean
   roleName: string | null
-  login: (credentials: LoginRequest) => Promise<void>
+  login: (credentials: LoginRequest, allowedRoles?: string[]) => Promise<void>
   logout: () => void
 }
 
@@ -27,13 +27,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const navigate = useNavigate()
 
-  const login = useCallback(async (credentials: LoginRequest) => {
+  const login = useCallback(async (credentials: LoginRequest, allowedRoles?: string[]) => {
     const response = await authApi.login(credentials)
     const loggedUser = response.data
+    const roleName = loggedUser.role?.roleName ?? ''
+
+    if (allowedRoles && !allowedRoles.includes(roleName)) {
+      throw new Error('role_mismatch')
+    }
+
     setUser(loggedUser)
     localStorage.setItem('user', JSON.stringify(loggedUser))
 
-    const roleName = loggedUser.role?.roleName ?? ''
     const route = ROLE_ROUTES[roleName] ?? '/login'
     navigate(route)
     toast.success(`Добро пожаловать, ${loggedUser.fullName}!`)

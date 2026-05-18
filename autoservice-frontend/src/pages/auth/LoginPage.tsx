@@ -4,8 +4,11 @@ import { Car, Lock, User, Eye, EyeOff, UserCircle, Briefcase } from 'lucide-reac
 import { useAuth } from '../../hooks/useAuth'
 import { MountainBackground } from '../../components/layout/MountainBackground'
 import { ROUTES } from '../../router/routes'
-import { ROLE_ROUTES } from '../../utils/roleConstants'
+import { ROLE_NAMES, ROLE_ROUTES } from '../../utils/roleConstants'
 import toast from 'react-hot-toast'
+
+const CLIENT_ROLES = [ROLE_NAMES.CLIENT]
+const EMPLOYEE_ROLES = [ROLE_NAMES.ADMIN, ROLE_NAMES.MASTER, ROLE_NAMES.ACCOUNTING, ROLE_NAMES.DIRECTOR]
 
 type Tab = 'client' | 'employee'
 
@@ -47,9 +50,17 @@ export function LoginPage() {
     }
     setLoading(true)
     try {
-      await login({ login: loginVal, passwordHash: password })
-    } catch {
-      toast.error('Неверный логин или пароль')
+      const allowedRoles = tab === 'client' ? CLIENT_ROLES : EMPLOYEE_ROLES
+      await login({ login: loginVal, passwordHash: password }, allowedRoles)
+    } catch (err: any) {
+      if (err?.message === 'role_mismatch') {
+        toast.error(tab === 'client'
+          ? 'Этот аккаунт не является клиентом. Используйте вкладку «Сотрудник».'
+          : 'Этот аккаунт не является сотрудником. Используйте вкладку «Клиент».'
+        )
+      } else {
+        toast.error('Неверный логин или пароль')
+      }
     } finally {
       setLoading(false)
     }

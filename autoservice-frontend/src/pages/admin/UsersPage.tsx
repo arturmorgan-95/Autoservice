@@ -8,7 +8,64 @@ import { EmptyState } from '../../components/ui/EmptyState'
 import { Modal } from '../../components/ui/Modal'
 import { Badge } from '../../components/ui/Badge'
 import toast from 'react-hot-toast'
-import type { User, CreateUserRequest } from '../../types'
+import type { Role, User, CreateUserRequest } from '../../types'
+
+interface UserFormProps {
+  form: CreateUserRequest
+  roles: Role[]
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void
+  onSubmit: () => void
+  onCancel: () => void
+  loading: boolean
+  isEdit?: boolean
+}
+
+function UserForm({ form, roles, onChange, onSubmit, onCancel, loading, isEdit }: UserFormProps) {
+  return (
+    <form onSubmit={e => { e.preventDefault(); onSubmit() }} className="space-y-4">
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="block text-sm text-white/60 mb-1">ФИО</label>
+          <input name="fullName" value={form.fullName} onChange={onChange} required className="input-glass" />
+        </div>
+        <div>
+          <label className="block text-sm text-white/60 mb-1">Email</label>
+          <input name="email" value={form.email} onChange={onChange} type="email" className="input-glass" />
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="block text-sm text-white/60 mb-1">Телефон</label>
+          <input name="phoneNumber" value={form.phoneNumber} onChange={onChange} className="input-glass" />
+        </div>
+        <div>
+          <label className="block text-sm text-white/60 mb-1">Роль</label>
+          <select name="roleId" value={form.roleId} onChange={onChange} className="select-glass">
+            {roles.map(r => <option key={r.id} value={r.id}>{r.roleName}</option>)}
+          </select>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="block text-sm text-white/60 mb-1">Логин</label>
+          <input name="login" value={form.login} onChange={onChange} required className="input-glass" />
+        </div>
+        <div>
+          <label className="block text-sm text-white/60 mb-1">
+            Пароль {isEdit && <span className="text-white/30 text-xs">(пусто — не менять)</span>}
+          </label>
+          <input name="passwordHash" value={form.passwordHash} onChange={onChange} required={!isEdit} type="password" className="input-glass" />
+        </div>
+      </div>
+      <div className="flex gap-3 pt-2">
+        <button type="button" onClick={onCancel} className="btn-secondary flex-1">Отмена</button>
+        <button type="submit" disabled={loading} className="btn-primary flex-1">
+          {loading ? 'Сохранение...' : isEdit ? 'Сохранить' : 'Создать'}
+        </button>
+      </div>
+    </form>
+  )
+}
 
 const emptyForm = (): CreateUserRequest => ({
   roleId: 5, fullName: '', email: '', phoneNumber: '', login: '', passwordHash: '',
@@ -49,7 +106,7 @@ export function UsersPage() {
     !search || u.fullName.toLowerCase().includes(search.toLowerCase()) || u.login.toLowerCase().includes(search.toLowerCase())
   )
 
-  const handle = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setForm(p => ({ ...p, [e.target.name]: e.target.name === 'roleId' ? Number(e.target.value) : e.target.value }))
 
   const openEdit = (u: User) => {
@@ -57,38 +114,12 @@ export function UsersPage() {
     setForm({ roleId: u.roleId, fullName: u.fullName, email: u.email, phoneNumber: u.phoneNumber, login: u.login, passwordHash: '' })
   }
 
-  const UserForm = ({ onSubmit, loading, onCancel, isEdit }: {
-    onSubmit: () => void; loading: boolean; onCancel: () => void; isEdit?: boolean
-  }) => (
-    <form onSubmit={e => { e.preventDefault(); onSubmit() }} className="space-y-4">
-      <div className="grid grid-cols-2 gap-3">
-        <div><label className="block text-sm text-white/60 mb-1">ФИО</label><input name="fullName" value={form.fullName} onChange={handle} required className="input-glass" /></div>
-        <div><label className="block text-sm text-white/60 mb-1">Email</label><input name="email" value={form.email} onChange={handle} type="email" className="input-glass" /></div>
-      </div>
-      <div className="grid grid-cols-2 gap-3">
-        <div><label className="block text-sm text-white/60 mb-1">Телефон</label><input name="phoneNumber" value={form.phoneNumber} onChange={handle} className="input-glass" /></div>
-        <div>
-          <label className="block text-sm text-white/60 mb-1">Роль</label>
-          <select name="roleId" value={form.roleId} onChange={handle} className="select-glass">
-            {(roles ?? []).map(r => <option key={r.id} value={r.id}>{r.roleName}</option>)}
-          </select>
-        </div>
-      </div>
-      <div className="grid grid-cols-2 gap-3">
-        <div><label className="block text-sm text-white/60 mb-1">Логин</label><input name="login" value={form.login} onChange={handle} required className="input-glass" /></div>
-        <div>
-          <label className="block text-sm text-white/60 mb-1">
-            Пароль {isEdit && <span className="text-white/30">(оставьте пустым чтобы не менять)</span>}
-          </label>
-          <input name="passwordHash" value={form.passwordHash} onChange={handle} required={!isEdit} type="password" className="input-glass" />
-        </div>
-      </div>
-      <div className="flex gap-3 pt-2">
-        <button type="button" onClick={onCancel} className="btn-secondary flex-1">Отмена</button>
-        <button type="submit" disabled={loading} className="btn-primary flex-1">{loading ? 'Сохранение...' : isEdit ? 'Сохранить' : 'Создать'}</button>
-      </div>
-    </form>
-  )
+  const handleUpdate = () => {
+    if (!editing) return
+    const data = { ...form }
+    if (!data.passwordHash) data.passwordHash = editing.passwordHash
+    updateMutation.mutate({ id: editing.id, data })
+  }
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -135,22 +166,26 @@ export function UsersPage() {
       )}
 
       <Modal isOpen={showAdd} onClose={() => setShowAdd(false)} title="Новый пользователь" size="md">
-        <UserForm onSubmit={() => createMutation.mutate(form)} loading={createMutation.isPending} onCancel={() => setShowAdd(false)} />
+        <UserForm
+          form={form}
+          roles={roles ?? []}
+          onChange={handleChange}
+          onSubmit={() => createMutation.mutate(form)}
+          onCancel={() => setShowAdd(false)}
+          loading={createMutation.isPending}
+        />
       </Modal>
 
       <Modal isOpen={!!editing} onClose={() => setEditing(null)} title="Редактировать пользователя" size="md">
-        {editing && (
-          <UserForm
-            isEdit
-            onSubmit={() => {
-              const data = { ...form }
-              if (!data.passwordHash) data.passwordHash = editing.passwordHash
-              updateMutation.mutate({ id: editing.id, data })
-            }}
-            loading={updateMutation.isPending}
-            onCancel={() => setEditing(null)}
-          />
-        )}
+        <UserForm
+          isEdit
+          form={form}
+          roles={roles ?? []}
+          onChange={handleChange}
+          onSubmit={handleUpdate}
+          onCancel={() => setEditing(null)}
+          loading={updateMutation.isPending}
+        />
       </Modal>
     </div>
   )

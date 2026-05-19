@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { BarChart2, Download, FileText, Users, Wrench, CreditCard } from 'lucide-react'
+import { BarChart2, Download, FileText, Users, Wrench } from 'lucide-react'
 import { paymentsApi } from '../../api/payments'
 import { applicationsApi } from '../../api/applications'
 import { applicationServicesApi } from '../../api/applicationServices'

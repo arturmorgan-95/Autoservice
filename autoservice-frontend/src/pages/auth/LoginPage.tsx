@@ -68,7 +68,93 @@ export function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative">
+      <style>{`
+        @keyframes float-car { 0%,100%{transform:translateY(0px) rotate(-1deg)} 50%{transform:translateY(-18px) rotate(1deg)} }
+        @keyframes float-moon { 0%,100%{transform:translateY(0px) rotate(3deg)} 50%{transform:translateY(-12px) rotate(-2deg)} }
+        .anim-car  { animation: float-car  5s ease-in-out infinite; }
+        .anim-moon { animation: float-moon 7s ease-in-out infinite; }
+      `}</style>
       <MountainBackground />
+
+      {/* Lada Priora — слева */}
+      <div className="hidden lg:block absolute left-12 top-1/2 -translate-y-1/2 anim-car">
+        {/* Цитата */}
+        <div className="mb-4 text-center px-2" style={{ filter: 'drop-shadow(0 0 10px rgba(139,92,246,0.7))' }}>
+          <p className="text-white font-bold leading-tight tracking-wide"
+            style={{ fontSize: '15px', textShadow: '0 0 12px rgba(139,92,246,1), 0 0 24px rgba(139,92,246,0.6)' }}>
+            ЧЕМ ВЫШЕ ГОРЫ,
+          </p>
+          <p className="text-white font-bold leading-tight tracking-wide"
+            style={{ fontSize: '15px', textShadow: '0 0 12px rgba(139,92,246,1), 0 0 24px rgba(139,92,246,0.6)' }}>
+            ТЕМ НИЖЕ ПРИОРЫ
+          </p>
+          <p className="text-white/40 italic mt-1" style={{ fontSize: '11px' }}>
+            — Министр внутренних дел
+          </p>
+        </div>
+        <div style={{ filter: 'drop-shadow(0 0 18px rgba(139,92,246,0.5))' }}>
+        <svg width="300" height="125" viewBox="0 0 300 125" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Кузов */}
+          <path d="M22,105 L22,78 L38,70 L76,65 L104,36 L122,23 L186,21 L213,30 L243,58 L263,62 L273,74 L273,105 Z"
+            fill="rgba(89,50,180,0.18)" stroke="rgba(139,92,246,0.75)" strokeWidth="1.5" strokeLinejoin="round"/>
+          {/* Лобовое + боковые стёкла */}
+          <path d="M108,38 L123,24 L184,22 L209,32 L237,59 L109,59 Z"
+            fill="rgba(59,130,246,0.15)" stroke="rgba(139,92,246,0.35)" strokeWidth="1"/>
+          {/* B-стойка */}
+          <line x1="166" y1="22" x2="166" y2="59" stroke="rgba(139,92,246,0.55)" strokeWidth="2"/>
+          {/* Дверной шов */}
+          <line x1="166" y1="59" x2="164" y2="103" stroke="rgba(139,92,246,0.2)" strokeWidth="1"/>
+          {/* Молдинг */}
+          <path d="M28,84 L262,82" stroke="rgba(139,92,246,0.3)" strokeWidth="1" strokeDasharray="4 3"/>
+          {/* Переднее колесо */}
+          <circle cx="229" cy="105" r="22" fill="#090920" stroke="rgba(139,92,246,0.8)" strokeWidth="2"/>
+          <circle cx="229" cy="105" r="12" fill="none" stroke="rgba(139,92,246,0.4)" strokeWidth="1.5"/>
+          <circle cx="229" cy="105" r="4" fill="rgba(139,92,246,0.7)"/>
+          {/* Заднее колесо */}
+          <circle cx="72" cy="105" r="22" fill="#090920" stroke="rgba(139,92,246,0.8)" strokeWidth="2"/>
+          <circle cx="72" cy="105" r="12" fill="none" stroke="rgba(139,92,246,0.4)" strokeWidth="1.5"/>
+          <circle cx="72" cy="105" r="4" fill="rgba(139,92,246,0.7)"/>
+          {/* Фара передняя */}
+          <ellipse cx="268" cy="74" rx="5" ry="9" fill="rgba(200,180,255,0.75)" stroke="rgba(139,92,246,0.6)" strokeWidth="1"/>
+          <ellipse cx="268" cy="74" rx="2" ry="4" fill="rgba(255,255,255,0.4)"/>
+          {/* Фонарь задний */}
+          <rect x="18" y="73" width="5" height="14" rx="1.5" fill="rgba(239,68,68,0.65)"/>
+          {/* Антенна */}
+          <line x1="50" y1="23" x2="44" y2="6" stroke="rgba(139,92,246,0.45)" strokeWidth="1.2"/>
+          <circle cx="44" cy="5" r="1.5" fill="rgba(139,92,246,0.5)"/>
+        </svg>
+        <p className="text-center text-xs text-white/20 mt-1 tracking-widest">LADA PRIORA</p>
+      </div>
+
+      {/* Полумесяц — справа */}
+      <div className="hidden lg:block absolute right-14 top-1/3 -translate-y-1/2 anim-moon" style={{ filter: 'drop-shadow(0 0 20px rgba(139,92,246,0.6))' }}>
+        <svg width="130" height="130" viewBox="0 0 130 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <mask id="crescent">
+              <rect width="130" height="130" fill="white"/>
+              <circle cx="82" cy="55" r="40" fill="black"/>
+            </mask>
+          </defs>
+          {/* Луна */}
+          <circle cx="58" cy="58" r="42"
+            fill="rgba(139,92,246,0.22)"
+            stroke="rgba(180,140,255,0.85)"
+            strokeWidth="1.5"
+            mask="url(#crescent)"/>
+          {/* Кратеры */}
+          <circle cx="42" cy="52" r="5" fill="none" stroke="rgba(180,140,255,0.25)" strokeWidth="1" mask="url(#crescent)"/>
+          <circle cx="55" cy="70" r="3" fill="none" stroke="rgba(180,140,255,0.2)" strokeWidth="1" mask="url(#crescent)"/>
+          {/* Звёзды */}
+          <circle cx="105" cy="22" r="2"   fill="rgba(255,255,255,0.65)"/>
+          <circle cx="118" cy="55" r="1.5" fill="rgba(255,255,255,0.45)"/>
+          <circle cx="100" cy="90" r="1"   fill="rgba(255,255,255,0.5)"/>
+          <circle cx="15"  cy="18" r="1.5" fill="rgba(255,255,255,0.4)"/>
+          <circle cx="8"   cy="95" r="1"   fill="rgba(255,255,255,0.3)"/>
+          <circle cx="115" cy="105" r="1"  fill="rgba(255,255,255,0.35)"/>
+          {/* Блик на луне */}
+          <path d="M30,38 Q38,32 46,36" stroke="rgba(255,255,255,0.3)" strokeWidth="1.2" fill="none" strokeLinecap="round" mask="url(#crescent)"/>
+        </svg>
+      </div>
 
       <div className="w-full max-w-md animate-fade-in">
         {/* Логотип */}

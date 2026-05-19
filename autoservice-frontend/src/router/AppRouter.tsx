@@ -27,9 +27,10 @@ import { UsersPage }               from '../pages/admin/UsersPage'
 import { MasterDashboard } from '../pages/master/MasterDashboard'
 import { MasterTasksPage } from '../pages/master/MasterTasksPage'
 
-import { AccountingDashboard }  from '../pages/accounting/AccountingDashboard'
-import { PaymentsPage }         from '../pages/accounting/PaymentsPage'
-import { PaymentReportPage }    from '../pages/accounting/PaymentReportPage'
+import { AccountingDashboard }    from '../pages/accounting/AccountingDashboard'
+import { PaymentsPage }           from '../pages/accounting/PaymentsPage'
+import { PaymentReportPage }      from '../pages/accounting/PaymentReportPage'
+import { AccountingReportPage }   from '../pages/accounting/AccountingReportPage'
 
 
 import { DirectorDashboard }  from '../pages/director/DirectorDashboard'
@@ -89,7 +90,7 @@ export function AppRouter() {
       <Route element={<ProtectedRoute allowedRoles={[ROLE_NAMES.ACCOUNTING]} />}>
         <Route element={<Layout />}>
           <Route path="/accounting/dashboard" element={<AccountingDashboard />} />
-          <Route path="/accounting/reports"   element={<PaymentReportPage />} />
+          <Route path="/accounting/reports"   element={<AccountingReportPage />} />
         </Route>
       </Route>
 

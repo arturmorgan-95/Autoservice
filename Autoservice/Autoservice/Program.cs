@@ -1,5 +1,6 @@
 using Autoservice.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,10 +38,36 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowFrontend");
 
-app.UseHttpsRedirection();
+// HTTPS-редирект только в разработке — в Docker работаем по HTTP
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Авто-применение миграций при старте (retry — SQL Server в Docker поднимается ~20 сек)
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var retries = 6;
+    while (retries > 0)
+    {
+        try
+        {
+            db.Database.Migrate();
+            break;
+        }
+        catch
+        {
+            retries--;
+            if (retries == 0) throw;
+            Console.WriteLine($"БД не готова, повтор через 5 сек... (осталось попыток: {retries})");
+            Thread.Sleep(5000);
+        }
+    }
+}
 
 app.Run();

@@ -1,0 +1,39 @@
+name: autoservice
+
+services:
+
+  # База данных — MS SQL Server
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "${DB_PASSWORD}"
+      MSSQL_PID: Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - db-data:/var/opt/mssql
+
+  # Бэкенд — ASP.NET Core 8
+  backend:
+    build: ./Autoservice/Autoservice
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: >-
+        Server=db,1433;Database=Autoservice;User Id=sa;
+        Password=${DB_PASSWORD};TrustServerCertificate=True;
+    depends_on:
+      - db
+
+  # Фронтенд — React + Vite → nginx
+  frontend:
+    build: ./autoservice-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  db-data:

@@ -14,11 +14,6 @@ import type { CreatePaymentRequest } from '../../types'
 
 const PAYMENT_STATUSES = ['Ожидает', 'Оплачено', 'Отменено']
 
-function statusStyle(s: string) {
-  if (s === 'Оплачено') return 'bg-emerald-accent/20 text-emerald-400'
-  if (s === 'Отменено') return 'bg-rose-accent/20 text-rose-400'
-  return 'bg-amber-accent/20 text-amber-400'
-}
 
 export function PaymentsPage() {
   const qc = useQueryClient()

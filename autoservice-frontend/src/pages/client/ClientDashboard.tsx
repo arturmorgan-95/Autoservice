@@ -7,7 +7,7 @@ import { paymentsApi } from '../../api/payments'
 import { StatCard } from '../../components/shared/StatCard'
 import { StatusBadge } from '../../components/shared/StatusBadge'
 import { PageSpinner } from '../../components/ui/Spinner'
-import { formatDate, formatDateTime } from '../../utils/formatters'
+import { formatDate } from '../../utils/formatters'
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '../../router/routes'
 

@@ -46,7 +46,7 @@ const NAV_BY_ROLE: Record<string, NavItem[]> = {
 
 export function Sidebar() {
   const { roleName } = useAuth()
-  const items = (roleName && NAV_BY_ROLE[roleName]) ?? []
+  const items = roleName ? (NAV_BY_ROLE[roleName] ?? []) : []
 
   return (
     <aside className="w-56 flex-shrink-0 flex flex-col h-full bg-bg-secondary/80 border-r border-violet-neon/10">

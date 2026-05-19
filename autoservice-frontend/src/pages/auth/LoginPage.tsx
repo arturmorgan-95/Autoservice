@@ -124,6 +124,7 @@ export function LoginPage() {
           <circle cx="44" cy="5" r="1.5" fill="rgba(139,92,246,0.5)"/>
         </svg>
         <p className="text-center text-xs text-white/20 mt-1 tracking-widest">LADA PRIORA</p>
+        </div>
       </div>
 
       {/* Полумесяц — справа */}

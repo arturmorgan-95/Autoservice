@@ -68,7 +68,7 @@ public class CarsController : ControllerBase
         if (car == null)
             return NotFound();
 
-        var completedStatusIds = new[] { 6 }; // Завершена
+        var completedStatusIds = new[] { 6 };
         var hasActiveApplications = await _context.Applications
             .AnyAsync(a => a.CarId == id && !completedStatusIds.Contains(a.StatusId));
 

@@ -50,8 +50,7 @@ export function Sidebar() {
 
   return (
     <aside className="w-56 flex-shrink-0 flex flex-col h-full bg-bg-secondary/80 border-r border-violet-neon/10">
-      {/* Логотип */}
-      <div className="px-4 py-5 border-b border-violet-neon/10">
+<div className="px-4 py-5 border-b border-violet-neon/10">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-gradient-violet flex items-center justify-center shadow-neon-sm">
             <Car size={16} className="text-white" />
@@ -63,8 +62,7 @@ export function Sidebar() {
         </div>
       </div>
 
-      {/* Навигация */}
-      <nav className="flex-1 px-2 py-4 space-y-0.5">
+<nav className="flex-1 px-2 py-4 space-y-0.5">
         {items.map((item) => (
           <NavLink
             key={item.to}
@@ -79,8 +77,7 @@ export function Sidebar() {
         ))}
       </nav>
 
-      {/* Роль */}
-      <div className="px-4 py-3 border-t border-violet-neon/10">
+<div className="px-4 py-3 border-t border-violet-neon/10">
         <p className="text-xs text-white/30 uppercase tracking-wider">{roleName}</p>
       </div>
     </aside>

@@ -39,7 +39,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowFrontend");
 
-// HTTPS-редирект только в разработке — в Docker работаем по HTTP
 if (app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
@@ -49,7 +48,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Авто-применение миграций при старте (retry — SQL Server в Docker поднимается ~20 сек)
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -70,11 +68,8 @@ using (var scope = app.Services.CreateScope())
         }
     }
 
-    // Начальные данные (seed) — заполняем только если таблицы пустые
     if (!db.Roles.Any())
     {
-        // Порядок важен: ID будут 1-5 по очереди вставки
-        // 1=Администратор, 2=Мастер, 3=Бухгалтер, 4=Клиент, 5=Директор
         db.Roles.AddRange(
             new Autoservice.Models.Role { RoleName = "Администратор" },
             new Autoservice.Models.Role { RoleName = "Мастер" },
@@ -87,7 +82,6 @@ using (var scope = app.Services.CreateScope())
 
     if (!db.Statuses.Any())
     {
-        // 1=В очереди … 6=Завершена (используется в коде как statusId==6)
         db.Statuses.AddRange(
             new Autoservice.Models.Status { StatusName = "В очереди" },
             new Autoservice.Models.Status { StatusName = "Назначена" },
@@ -116,7 +110,6 @@ using (var scope = app.Services.CreateScope())
 
     if (!db.Users.Any())
     {
-        // Дожидаемся, пока роль Администратор (id=1) точно создана
         var adminRole = db.Roles.First(r => r.RoleName == "Администратор");
         db.Users.Add(new Autoservice.Models.User
         {

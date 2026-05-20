@@ -21,7 +21,6 @@ export function StatsPage() {
   const paid = (payments ?? []).filter(p => p.paymentStatus === 'Оплачено')
   const clients = (users ?? []).filter(u => u.role?.roleName === ROLE_NAMES.CLIENT)
 
-  // Топ услуг по выручке
   const serviceRevenue: Record<string, { name: string; count: number; total: number }> = {}
   services.forEach(s => {
     const name = s.service?.serviceName ?? 'Неизвестно'
@@ -31,7 +30,6 @@ export function StatsPage() {
   })
   const topServices = Object.values(serviceRevenue).sort((a, b) => b.total - a.total).slice(0, 8)
 
-  // Топ клиентов по заявкам
   const clientStats = clients.map(c => ({
     name: c.fullName,
     count: apps.filter(a => a.clientId === c.id).length,
@@ -46,7 +44,6 @@ export function StatsPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Топ услуг */}
         <div className="glass-card p-5">
           <h3 className="font-medium text-white flex items-center gap-2 mb-4">
             <BarChart2 size={16} className="text-violet-neon" /> Топ услуг по выручке
@@ -79,7 +76,6 @@ export function StatsPage() {
           )}
         </div>
 
-        {/* Топ клиентов */}
         <div className="glass-card p-5">
           <h3 className="font-medium text-white flex items-center gap-2 mb-4">
             <BarChart2 size={16} className="text-blue-accent" /> Топ клиентов по заявкам

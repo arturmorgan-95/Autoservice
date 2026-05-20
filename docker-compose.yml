@@ -2,7 +2,6 @@ name: autoservice
 
 services:
 
-  # База данных — MS SQL Server
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
@@ -14,7 +13,6 @@ services:
     volumes:
       - db-data:/var/opt/mssql
 
-  # Бэкенд — ASP.NET Core 8
   backend:
     build: ./Autoservice/Autoservice
     ports:
@@ -25,7 +23,6 @@ services:
     depends_on:
       - db
 
-  # Фронтенд — React + Vite → nginx
   frontend:
     build: ./autoservice-frontend
     ports:

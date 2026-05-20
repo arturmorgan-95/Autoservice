@@ -67,7 +67,6 @@ public class ApplicationsController : ControllerBase
         if (application == null)
             return NotFound();
 
-        // Завершена (id=6) требует оплаченного платежа
         if (statusId == 6)
         {
             var hasPaid = await _context.Payments

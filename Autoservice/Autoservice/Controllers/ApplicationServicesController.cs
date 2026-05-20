@@ -78,7 +78,6 @@ public class ApplicationServicesController : ControllerBase
 
         await _context.SaveChangesAsync();
 
-        // Пересчитываем статус заявки на основе статусов всех её услуг
         var allServices = await _context.ApplicationsServices
             .Where(s => s.ApplicationId == service.ApplicationId)
             .ToListAsync();
@@ -86,20 +85,19 @@ public class ApplicationServicesController : ControllerBase
         var application = await _context.Applications.FindAsync(service.ApplicationId);
         if (application != null)
         {
-            var doneIds = new[] { 5, 6 }; // Выполнена, Завершена
+            var doneIds = new[] { 5, 6 };
             bool allDone = allServices.All(s => doneIds.Contains(s.StatusId));
-            bool anyInWork = allServices.Any(s => s.StatusId >= 4); // В работе и выше
+            bool anyInWork = allServices.Any(s => s.StatusId >= 4);
 
             if (allDone)
             {
                 var hasPaid = await _context.Payments
                     .AnyAsync(p => p.ApplicationId == service.ApplicationId && p.PaymentStatus == "Оплачено");
 
-                // Без оплаты максимум «Выполнена», не «Завершена»
                 application.StatusId = hasPaid ? 6 : 5;
             }
             else if (anyInWork)
-                application.StatusId = 4; // В работе
+                application.StatusId = 4;
 
             await _context.SaveChangesAsync();
         }

@@ -81,8 +81,7 @@ export function ApplicationManagePage() {
         </div>
       </div>
 
-      {/* Инфо */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+<div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="glass-card p-4">
           <p className="text-xs text-white/40 mb-1">Клиент</p>
           <p className="font-medium">{app.client?.fullName ?? '—'}</p>
@@ -99,8 +98,7 @@ export function ApplicationManagePage() {
         </div>
       </div>
 
-      {/* Услуги */}
-      <div className="glass-card p-5">
+<div className="glass-card p-5">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-medium text-white flex items-center gap-2"><Wrench size={16} className="text-violet-neon" /> Услуги</h3>
           <button onClick={() => setShowAddService(true)} className="btn-primary text-sm flex items-center gap-1.5">
@@ -131,8 +129,7 @@ export function ApplicationManagePage() {
         )}
       </div>
 
-      {/* Платежи */}
-      <div className="glass-card p-5">
+<div className="glass-card p-5">
         <h3 className="font-medium text-white flex items-center gap-2 mb-4"><CreditCard size={16} className="text-emerald-accent" /> Платежи</h3>
         {appPayments.length === 0 ? (
           <p className="text-white/40 text-sm">Платежей нет</p>

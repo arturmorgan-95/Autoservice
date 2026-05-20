@@ -44,8 +44,7 @@ export function DirectorDashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Статусы заявок */}
-        <div className="glass-card p-5">
+<div className="glass-card p-5">
           <h3 className="font-medium text-white mb-4">Заявки по статусам</h3>
           <div className="space-y-3">
             {Object.entries(statsByStatus).map(([status, count]) => {
@@ -65,8 +64,7 @@ export function DirectorDashboard() {
           </div>
         </div>
 
-        {/* Загрузка мастеров */}
-        <div className="glass-card p-5">
+<div className="glass-card p-5">
           <h3 className="font-medium text-white mb-4">Мастера ({masters.length})</h3>
           <div className="space-y-2">
             {masters.length === 0 ? (

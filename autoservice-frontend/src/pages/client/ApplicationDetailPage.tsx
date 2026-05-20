@@ -49,8 +49,7 @@ export function ApplicationDetailPage() {
         <div className="ml-auto"><StatusBadge statusName={app.status?.statusName} /></div>
       </div>
 
-      {/* Основная информация */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="glass-card p-5">
           <div className="flex items-center gap-2 mb-3">
             <Car size={16} className="text-violet-neon" />
@@ -74,8 +73,7 @@ export function ApplicationDetailPage() {
         </div>
       </div>
 
-      {/* Услуги */}
-      <div className="glass-card p-5">
+<div className="glass-card p-5">
         <div className="flex items-center gap-2 mb-4">
           <Wrench size={16} className="text-violet-neon" />
           <h3 className="font-medium text-white">Выполняемые услуги</h3>
@@ -104,8 +102,7 @@ export function ApplicationDetailPage() {
         )}
       </div>
 
-      {/* Платежи */}
-      <div className="glass-card p-5">
+<div className="glass-card p-5">
         <div className="flex items-center gap-2 mb-4">
           <CreditCard size={16} className="text-emerald-accent" />
           <h3 className="font-medium text-white">Платежи</h3>

@@ -15,7 +15,6 @@ type Tab = 'client' | 'employee'
 export function LoginPage() {
   const { login } = useAuth()
 
-  // Сбрасываем старый кэш с некорректными ролями
   useEffect(() => {
     try {
       const stored = localStorage.getItem('user')
@@ -76,9 +75,7 @@ export function LoginPage() {
       `}</style>
       <MountainBackground />
 
-      {/* Lada Priora — слева */}
       <div className="hidden lg:block absolute left-12 top-1/2 -translate-y-1/2 anim-car">
-        {/* Цитата */}
         <div className="mb-4 text-center px-2" style={{ filter: 'drop-shadow(0 0 10px rgba(139,92,246,0.7))' }}>
           <p className="text-white font-bold leading-tight tracking-wide"
             style={{ fontSize: '15px', textShadow: '0 0 12px rgba(139,92,246,1), 0 0 24px rgba(139,92,246,0.6)' }}>
@@ -94,32 +91,22 @@ export function LoginPage() {
         </div>
         <div style={{ filter: 'drop-shadow(0 0 18px rgba(139,92,246,0.5))' }}>
         <svg width="300" height="125" viewBox="0 0 300 125" fill="none" xmlns="http://www.w3.org/2000/svg">
-          {/* Кузов */}
           <path d="M22,105 L22,78 L38,70 L76,65 L104,36 L122,23 L186,21 L213,30 L243,58 L263,62 L273,74 L273,105 Z"
             fill="rgba(89,50,180,0.18)" stroke="rgba(139,92,246,0.75)" strokeWidth="1.5" strokeLinejoin="round"/>
-          {/* Лобовое + боковые стёкла */}
           <path d="M108,38 L123,24 L184,22 L209,32 L237,59 L109,59 Z"
             fill="rgba(59,130,246,0.15)" stroke="rgba(139,92,246,0.35)" strokeWidth="1"/>
-          {/* B-стойка */}
           <line x1="166" y1="22" x2="166" y2="59" stroke="rgba(139,92,246,0.55)" strokeWidth="2"/>
-          {/* Дверной шов */}
           <line x1="166" y1="59" x2="164" y2="103" stroke="rgba(139,92,246,0.2)" strokeWidth="1"/>
-          {/* Молдинг */}
           <path d="M28,84 L262,82" stroke="rgba(139,92,246,0.3)" strokeWidth="1" strokeDasharray="4 3"/>
-          {/* Переднее колесо */}
           <circle cx="229" cy="105" r="22" fill="#090920" stroke="rgba(139,92,246,0.8)" strokeWidth="2"/>
           <circle cx="229" cy="105" r="12" fill="none" stroke="rgba(139,92,246,0.4)" strokeWidth="1.5"/>
           <circle cx="229" cy="105" r="4" fill="rgba(139,92,246,0.7)"/>
-          {/* Заднее колесо */}
           <circle cx="72" cy="105" r="22" fill="#090920" stroke="rgba(139,92,246,0.8)" strokeWidth="2"/>
           <circle cx="72" cy="105" r="12" fill="none" stroke="rgba(139,92,246,0.4)" strokeWidth="1.5"/>
           <circle cx="72" cy="105" r="4" fill="rgba(139,92,246,0.7)"/>
-          {/* Фара передняя */}
           <ellipse cx="268" cy="74" rx="5" ry="9" fill="rgba(200,180,255,0.75)" stroke="rgba(139,92,246,0.6)" strokeWidth="1"/>
           <ellipse cx="268" cy="74" rx="2" ry="4" fill="rgba(255,255,255,0.4)"/>
-          {/* Фонарь задний */}
           <rect x="18" y="73" width="5" height="14" rx="1.5" fill="rgba(239,68,68,0.65)"/>
-          {/* Антенна */}
           <line x1="50" y1="23" x2="44" y2="6" stroke="rgba(139,92,246,0.45)" strokeWidth="1.2"/>
           <circle cx="44" cy="5" r="1.5" fill="rgba(139,92,246,0.5)"/>
         </svg>
@@ -127,7 +114,6 @@ export function LoginPage() {
         </div>
       </div>
 
-      {/* Полумесяц — справа */}
       <div className="hidden lg:block absolute right-14 top-1/3 -translate-y-1/2 anim-moon" style={{ filter: 'drop-shadow(0 0 20px rgba(139,92,246,0.6))' }}>
         <svg width="130" height="130" viewBox="0 0 130 130" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -136,29 +122,24 @@ export function LoginPage() {
               <circle cx="82" cy="55" r="40" fill="black"/>
             </mask>
           </defs>
-          {/* Луна */}
           <circle cx="58" cy="58" r="42"
             fill="rgba(139,92,246,0.22)"
             stroke="rgba(180,140,255,0.85)"
             strokeWidth="1.5"
             mask="url(#crescent)"/>
-          {/* Кратеры */}
           <circle cx="42" cy="52" r="5" fill="none" stroke="rgba(180,140,255,0.25)" strokeWidth="1" mask="url(#crescent)"/>
           <circle cx="55" cy="70" r="3" fill="none" stroke="rgba(180,140,255,0.2)" strokeWidth="1" mask="url(#crescent)"/>
-          {/* Звёзды */}
           <circle cx="105" cy="22" r="2"   fill="rgba(255,255,255,0.65)"/>
           <circle cx="118" cy="55" r="1.5" fill="rgba(255,255,255,0.45)"/>
           <circle cx="100" cy="90" r="1"   fill="rgba(255,255,255,0.5)"/>
           <circle cx="15"  cy="18" r="1.5" fill="rgba(255,255,255,0.4)"/>
           <circle cx="8"   cy="95" r="1"   fill="rgba(255,255,255,0.3)"/>
           <circle cx="115" cy="105" r="1"  fill="rgba(255,255,255,0.35)"/>
-          {/* Блик на луне */}
           <path d="M30,38 Q38,32 46,36" stroke="rgba(255,255,255,0.3)" strokeWidth="1.2" fill="none" strokeLinecap="round" mask="url(#crescent)"/>
         </svg>
       </div>
 
       <div className="w-full max-w-md animate-fade-in">
-        {/* Логотип */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-violet shadow-neon-violet mb-4">
             <Car size={28} className="text-white" />
@@ -168,7 +149,6 @@ export function LoginPage() {
         </div>
 
         <div className="glass-card p-8">
-          {/* Вкладки */}
           <div className="flex rounded-xl bg-white/5 p-1 mb-6 gap-1">
             <button
               type="button"
@@ -251,7 +231,6 @@ export function LoginPage() {
             </button>
           </form>
 
-          {/* Ссылка на регистрацию — только для клиентов */}
           {tab === 'client' && (
             <div className="mt-5 text-center">
               <span className="text-sm text-white/30">Нет аккаунта? </span>

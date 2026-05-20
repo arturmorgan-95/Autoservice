@@ -72,7 +72,6 @@ export function AllApplicationsPage() {
         </button>
       </div>
 
-      {/* Поиск и фильтры */}
       <div className="flex gap-3 flex-wrap">
         <div className="relative flex-1 min-w-48">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />

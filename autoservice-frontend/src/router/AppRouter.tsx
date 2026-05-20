@@ -52,8 +52,7 @@ export function AppRouter() {
       <Route path="/unauthorized" element={<UnauthorizedPage />} />
       <Route path="/" element={<RootRedirect />} />
 
-      {/* Клиент */}
-      <Route element={<ProtectedRoute allowedRoles={[ROLE_NAMES.CLIENT]} />}>
+<Route element={<ProtectedRoute allowedRoles={[ROLE_NAMES.CLIENT]} />}>
         <Route element={<Layout />}>
           <Route path="/client/dashboard"         element={<ClientDashboard />} />
           <Route path="/client/cars"              element={<MyCarsPage />} />
@@ -63,8 +62,7 @@ export function AppRouter() {
         </Route>
       </Route>
 
-      {/* Администратор */}
-      <Route element={<ProtectedRoute allowedRoles={[ROLE_NAMES.ADMIN]} />}>
+<Route element={<ProtectedRoute allowedRoles={[ROLE_NAMES.ADMIN]} />}>
         <Route element={<Layout />}>
           <Route path="/admin/dashboard"          element={<AdminDashboard />} />
           <Route path="/admin/applications"       element={<AllApplicationsPage />} />
@@ -78,24 +76,21 @@ export function AppRouter() {
         </Route>
       </Route>
 
-      {/* Мастер */}
-      <Route element={<ProtectedRoute allowedRoles={[ROLE_NAMES.MASTER]} />}>
+<Route element={<ProtectedRoute allowedRoles={[ROLE_NAMES.MASTER]} />}>
         <Route element={<Layout />}>
           <Route path="/master/dashboard" element={<MasterDashboard />} />
           <Route path="/master/tasks"     element={<MasterTasksPage />} />
         </Route>
       </Route>
 
-      {/* Бухгалтерия */}
-      <Route element={<ProtectedRoute allowedRoles={[ROLE_NAMES.ACCOUNTING]} />}>
+<Route element={<ProtectedRoute allowedRoles={[ROLE_NAMES.ACCOUNTING]} />}>
         <Route element={<Layout />}>
           <Route path="/accounting/dashboard" element={<AccountingDashboard />} />
           <Route path="/accounting/reports"   element={<AccountingReportPage />} />
         </Route>
       </Route>
 
-      {/* Директор */}
-      <Route element={<ProtectedRoute allowedRoles={[ROLE_NAMES.DIRECTOR]} />}>
+<Route element={<ProtectedRoute allowedRoles={[ROLE_NAMES.DIRECTOR]} />}>
         <Route element={<Layout />}>
           <Route path="/director/dashboard" element={<DirectorDashboard />} />
           <Route path="/director/masters"   element={<MastersLoadPage />} />

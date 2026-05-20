@@ -1,4 +1,3 @@
-# === Этап 1: сборка ===
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
@@ -8,7 +7,6 @@ RUN dotnet restore
 COPY . ./
 RUN dotnet publish -c Release -o /app/publish
 
-# === Этап 2: запуск (образ без SDK — в 3 раза легче) ===
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 

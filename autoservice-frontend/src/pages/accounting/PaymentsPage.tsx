@@ -53,11 +53,9 @@ export function PaymentsPage() {
   const filtered = filterStatus ? allPayments.filter(p => p.paymentStatus === filterStatus) : allPayments
   const sorted = [...filtered].sort((a, b) => new Date(b.paymentDate).getTime() - new Date(a.paymentDate).getTime())
 
-  // Заявки без платежей — для формы добавления
   const paidAppIds = new Set(allPayments.map(p => p.applicationId))
   const unpaidApplications = (applications ?? []).filter(a => !paidAppIds.has(a.id))
 
-  // Стоимость заявок: сумма услуг и сумма оплат
   const appRows = (applications ?? []).map(app => {
     const services = (appServices ?? []).filter(s => s.applicationId === app.id)
     const servicesTotal = services.reduce((sum, s) => sum + s.price, 0)
@@ -81,7 +79,6 @@ export function PaymentsPage() {
         </button>
       </div>
 
-      {/* Вкладки */}
       <div className="flex rounded-xl bg-white/5 p-1 gap-1 w-fit">
         <button
           onClick={() => setActiveTab('payments')}

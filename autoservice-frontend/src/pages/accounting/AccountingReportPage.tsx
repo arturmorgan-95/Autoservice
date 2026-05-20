@@ -33,7 +33,6 @@ export function AccountingReportPage() {
   const allSvc = appServices ?? []
   const allUsers = users ?? []
 
-  // ── Вкладка 1: По месяцам ──────────────────────────────────────────
   const paid = allPayments.filter(p => p.paymentStatus === 'Оплачено')
   const byMonth: Record<string, { count: number; total: number; cash: number; card: number; transfer: number }> = {}
   paid.forEach(p => {
@@ -47,14 +46,12 @@ export function AccountingReportPage() {
   })
   const months = Object.entries(byMonth).sort((a, b) => b[0].localeCompare(a[0]))
 
-  // ── Вкладка 2: Заявки ─────────────────────────────────────────────
   const appRows = allApps.map(app => {
     const svcTotal = allSvc.filter(s => s.applicationId === app.id).reduce((s, x) => s + x.price, 0)
     const paidTotal = allPayments.filter(p => p.applicationId === app.id && p.paymentStatus === 'Оплачено').reduce((s, p) => s + p.amount, 0)
     return { app, svcTotal, paidTotal, balance: svcTotal - paidTotal }
   }).sort((a, b) => b.app.id - a.app.id)
 
-  // ── Вкладка 3: Клиенты ────────────────────────────────────────────
   const clients = allUsers.filter(u => u.role?.roleName === ROLE_NAMES.CLIENT)
   const clientRows = clients.map(c => {
     const apps = allApps.filter(a => a.clientId === c.id)
@@ -68,7 +65,6 @@ export function AccountingReportPage() {
     return { client: c, appCount: apps.length, svcTotal, paidTotal, debt: svcTotal - paidTotal }
   }).filter(r => r.appCount > 0).sort((a, b) => b.debt - a.debt)
 
-  // ── Вкладка 4: Услуги ─────────────────────────────────────────────
   const svcMap: Record<string, { count: number; revenue: number }> = {}
   allSvc.forEach(s => {
     const name = s.service?.serviceName ?? `Услуга #${s.serviceId}`
@@ -78,7 +74,6 @@ export function AccountingReportPage() {
   })
   const svcRows = Object.entries(svcMap).sort((a, b) => b[1].revenue - a[1].revenue)
 
-  // ── CSV экспорт ───────────────────────────────────────────────────
   const exportCsv = () => {
     const rows: (string | number)[][] = [['Период', 'Платежей', 'Итого', 'Наличные', 'Карта', 'Перевод']]
     months.forEach(([k, v]) => rows.push([formatMonthYear(k + '-01'), v.count, v.total, v.cash, v.card, v.transfer]))
@@ -114,7 +109,6 @@ export function AccountingReportPage() {
         </button>
       </div>
 
-      {/* Вкладки */}
       <div className="flex rounded-xl bg-white/5 p-1 gap-1 w-fit flex-wrap">
         {TABS.map(t => (
           <button
@@ -127,7 +121,6 @@ export function AccountingReportPage() {
         ))}
       </div>
 
-      {/* По месяцам */}
       {tab === 'months' && (
         months.length === 0 ? (
           <div className="glass-card p-8 text-center">
@@ -163,7 +156,6 @@ export function AccountingReportPage() {
         )
       )}
 
-      {/* Заявки */}
       {tab === 'applications' && (
         <div className="glass-card overflow-hidden">
           <table className="table-glass">
@@ -206,7 +198,6 @@ export function AccountingReportPage() {
         </div>
       )}
 
-      {/* Клиенты */}
       {tab === 'clients' && (
         clientRows.length === 0 ? (
           <div className="glass-card p-8 text-center">
@@ -249,7 +240,6 @@ export function AccountingReportPage() {
         )
       )}
 
-      {/* Услуги */}
       {tab === 'services' && (
         svcRows.length === 0 ? (
           <div className="glass-card p-8 text-center">
@@ -295,7 +285,6 @@ export function AccountingReportPage() {
         )
       )}
 
-      {/* Итоговая строка платежей */}
       {tab === 'applications' && appRows.length > 0 && (
         <div className="glass-card p-4">
           <div className="flex gap-8 text-sm">

@@ -64,7 +64,6 @@ export function MyApplicationsPage() {
         </button>
       </div>
 
-      {/* Фильтр */}
       <div className="flex gap-2 flex-wrap">
         <button onClick={() => setFilterStatus('')} className={`text-xs px-3 py-1.5 rounded-full border transition-all ${!filterStatus ? 'bg-violet-neon/20 border-violet-neon text-violet-light' : 'border-white/10 text-white/40 hover:border-white/30'}`}>
           Все ({myApps.length})

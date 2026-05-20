@@ -67,7 +67,6 @@ export function RegisterPage() {
       <MountainBackground />
 
       <div className="w-full max-w-md animate-fade-in">
-        {/* Логотип */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-violet shadow-neon-violet mb-4">
             <Car size={28} className="text-white" />
@@ -80,7 +79,6 @@ export function RegisterPage() {
           <h2 className="text-xl font-semibold text-white mb-6">Создать аккаунт</h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* ФИО */}
             <div>
               <label className="block text-sm font-medium text-white/60 mb-1.5">
                 ФИО <span className="text-rose-400">*</span>
@@ -97,7 +95,6 @@ export function RegisterPage() {
               </div>
             </div>
 
-            {/* Email */}
             <div>
               <label className="block text-sm font-medium text-white/60 mb-1.5">Email</label>
               <div className="relative">
@@ -112,7 +109,6 @@ export function RegisterPage() {
               </div>
             </div>
 
-            {/* Телефон */}
             <div>
               <label className="block text-sm font-medium text-white/60 mb-1.5">Телефон</label>
               <div className="relative">
@@ -128,7 +124,6 @@ export function RegisterPage() {
             </div>
 
             <div className="border-t border-white/10 pt-4">
-              {/* Логин */}
               <div className="mb-4">
                 <label className="block text-sm font-medium text-white/60 mb-1.5">
                   Логин <span className="text-rose-400">*</span>
@@ -146,7 +141,6 @@ export function RegisterPage() {
                 </div>
               </div>
 
-              {/* Пароль */}
               <div className="mb-4">
                 <label className="block text-sm font-medium text-white/60 mb-1.5">
                   Пароль <span className="text-rose-400">*</span>
@@ -171,7 +165,6 @@ export function RegisterPage() {
                 </div>
               </div>
 
-              {/* Подтверждение */}
               <div>
                 <label className="block text-sm font-medium text-white/60 mb-1.5">
                   Подтвердите пароль <span className="text-rose-400">*</span>

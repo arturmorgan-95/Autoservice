@@ -1,4 +1,5 @@
 using Autoservice.Data;
+using Autoservice.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,9 +30,11 @@ namespace Autoservice.Controllers
                 return BadRequest(new { message = "Логин и пароль обязательны" });
             }
 
+            var hashedPassword = PasswordHelper.Hash(request.PasswordHash);
+
             var user = await _context.Users
                 .Include(u => u.Role)
-                .FirstOrDefaultAsync(u => u.Login == request.Login && u.PasswordHash == request.PasswordHash);
+                .FirstOrDefaultAsync(u => u.Login == request.Login && u.PasswordHash == hashedPassword);
 
             if (user == null)
             {

@@ -1,4 +1,5 @@
 using Autoservice.Data;
+using Autoservice.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 
@@ -124,7 +125,7 @@ using (var scope = app.Services.CreateScope())
             Email = "admin@autoservice.ru",
             PhoneNumber = "+7 000 000 00 00",
             Login = "admin",
-            PasswordHash = "admin123"
+            PasswordHash = PasswordHelper.Hash("admin123")
         });
         db.SaveChanges();
     }

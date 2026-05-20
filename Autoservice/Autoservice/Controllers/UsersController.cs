@@ -1,4 +1,5 @@
 ﻿using Autoservice.Data;
+using Autoservice.Helpers;
 using Autoservice.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -42,6 +43,7 @@ public class UsersController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(User user)
     {
+        user.PasswordHash = PasswordHelper.Hash(user.PasswordHash);
         _context.Users.Add(user);
 
         await _context.SaveChangesAsync();
@@ -52,8 +54,18 @@ public class UsersController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, User user)
     {
-        user.Id = id;
-        _context.Entry(user).State = EntityState.Modified;
+        var existing = await _context.Users.FindAsync(id);
+        if (existing == null)
+            return NotFound();
+
+        existing.RoleId = user.RoleId;
+        existing.FullName = user.FullName;
+        existing.Email = user.Email;
+        existing.PhoneNumber = user.PhoneNumber;
+        existing.Login = user.Login;
+
+        if (!string.IsNullOrWhiteSpace(user.PasswordHash))
+            existing.PasswordHash = PasswordHelper.Hash(user.PasswordHash);
 
         await _context.SaveChangesAsync();
 

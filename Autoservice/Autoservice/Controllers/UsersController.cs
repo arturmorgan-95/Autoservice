@@ -43,6 +43,10 @@ public class UsersController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(User user)
     {
+        var conflict = await FindConflict(user.Login, user.Email, user.PhoneNumber, excludeId: null);
+        if (conflict != null)
+            return Conflict(new { message = conflict });
+
         user.PasswordHash = PasswordHelper.Hash(user.PasswordHash);
         _context.Users.Add(user);
 
@@ -57,6 +61,10 @@ public class UsersController : ControllerBase
         var existing = await _context.Users.FindAsync(id);
         if (existing == null)
             return NotFound();
+
+        var conflict = await FindConflict(user.Login, user.Email, user.PhoneNumber, excludeId: id);
+        if (conflict != null)
+            return Conflict(new { message = conflict });
 
         existing.RoleId = user.RoleId;
         existing.FullName = user.FullName;
@@ -85,5 +93,23 @@ public class UsersController : ControllerBase
         await _context.SaveChangesAsync();
 
         return NoContent();
+    }
+
+    private async Task<string?> FindConflict(string login, string email, string phone, int? excludeId)
+    {
+        var query = _context.Users.AsQueryable();
+        if (excludeId.HasValue)
+            query = query.Where(u => u.Id != excludeId.Value);
+
+        if (await query.AnyAsync(u => u.Login == login))
+            return "Пользователь с таким логином уже существует";
+
+        if (!string.IsNullOrWhiteSpace(email) && await query.AnyAsync(u => u.Email == email))
+            return "Пользователь с таким email уже существует";
+
+        if (!string.IsNullOrWhiteSpace(phone) && await query.AnyAsync(u => u.PhoneNumber == phone))
+            return "Пользователь с таким номером телефона уже существует";
+
+        return null;
     }
 }
